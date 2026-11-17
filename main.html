@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reddit Tales Pro | YouTube Shorts Creator Studio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            orange: '#FF4500',
+                            amber: '#FF6B00',
+                            dark: '#0B0E14',
+                            card: '#131822',
+                            border: '#1F2937'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom scrollbar for clean dark UI */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0B0E14;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1F2937;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #FF4500;
+        }
+    </style>
+</head>
+<body class="bg-brand-dark text-gray-100 font-sans min-h-screen flex flex-col antialiased selection:bg-brand-orange selection:text-white">
+
+    <!-- Toast Notification Box (Replaces alert) -->
+    <div id="toast" class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none">
+        <div class="bg-gray-900 border border-brand-orange text-white px-5 py-3 rounded-xl shadow-2xl flex items-center gap-3">
+            <span class="w-2.5 h-2.5 rounded-full bg-brand-orange animate-pulse"></span>
+            <span id="toast-msg" class="text-sm font-medium">Copied to clipboard!</span>
+        </div>
+    </div>
+
+    <!-- Header Navigation -->
+    <header class="border-b border-brand-border bg-brand-dark/90 backdrop-blur-md sticky top-0 z-40">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex flex-wrap items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-orange to-brand-amber flex items-center justify-center shadow-lg shadow-brand-orange/20">
+                    <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2C6.48 2 2 6.03 2 11c0 2.39 1.05 4.56 2.76 6.16-.24 1.35-.94 2.75-1.01 2.89-.15.29-.03.65.27.79.1.05.2.07.3.07.21 0 .42-.1.54-.28.08-.12 1.84-2.61 3.55-3.23 1.13.39 2.35.6 3.59.6 5.52 0 10-4.03 10-9s-4.48-9-10-9zm-3 10.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm6 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/>
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="text-lg sm:text-xl font-extrabold tracking-tight text-white">Reddit Tales Pro</h1>
+                    <p class="text-xs text-gray-400 font-medium">@RedditTalesPro • Shorts Production Hub</p>
+                </div>
+            </div>
+
+            <!-- Navigation Tabs -->
+            <nav class="flex bg-brand-card p-1 rounded-xl border border-brand-border">
+                <button onclick="switchTab('scripts')" id="tab-scripts" class="px-4 py-2 rounded-lg text-sm font-semibold bg-brand-orange text-white transition-all">
+                    Shorts Scripts
+                </button>
+                <button onclick="switchTab('branding')" id="tab-branding" class="px-4 py-2 rounded-lg text-sm font-semibold text-gray-400 hover:text-white transition-all">
+                    Channel Branding
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="flex-grow max-w-6xl w-full mx-auto px-4 sm:px-6 py-8">
+
+        <!-- SCRIPTS VIEW -->
+        <section id="view-scripts" class="space-y-8">
+            <!-- Top Action Bar -->
+            <div class="bg-brand-card border border-brand-border rounded-2xl p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shadow-xl">
+                <div>
+                    <h2 class="text-xl font-bold text-white">Nonstop Viral Shorts Scripts</h2>
+                    <p class="text-sm text-gray-400 mt-1">Zero emojis, clean pacing, complete with voiceover, music, and gameplay specs.</p>
+                </div>
+                <button onclick="generateNextScript()" class="w-full md:w-auto px-6 py-3 bg-gradient-to-r from-brand-orange to-brand-amber hover:opacity-95 active:scale-95 text-white font-bold rounded-xl shadow-lg shadow-brand-orange/25 transition-all flex items-center justify-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                    </svg>
+                    <span>Generate Next Script</span>
+                </button>
+            </div>
+
+            <!-- Scripts Feed Container -->
+            <div id="scripts-container" class="space-y-6">
+                <!-- Scripts injected by JavaScript -->
+            </div>
+        </section>
+
+        <!-- BRANDING VIEW -->
+        <section id="view-branding" class="hidden space-y-8">
+            <!-- Channel Identity Card -->
+            <div class="bg-brand-card border border-brand-border rounded-2xl p-6 sm:p-8 shadow-xl">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-brand-border">
+                    <div>
+                        <span class="text-xs font-bold uppercase tracking-wider text-brand-orange">Verified Available Identity</span>
+                        <h2 class="text-2xl font-extrabold text-white mt-1">Channel Name & Handle</h2>
+                    </div>
+                    <button onclick="copyText('@RedditTalesPro', 'Handle copied!')" class="px-4 py-2.5 bg-gray-800 hover:bg-gray-700 text-white text-sm font-semibold rounded-xl border border-gray-700 transition-all flex items-center gap-2 self-start">
+                        <span>Copy @RedditTalesPro</span>
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                    <div class="bg-brand-dark p-5 rounded-xl border border-brand-border">
+                        <p class="text-xs text-gray-400 uppercase font-semibold">Channel Name</p>
+                        <p class="text-lg font-bold text-white mt-1">Reddit Tales Pro</p>
+                    </div>
+                    <div class="bg-brand-dark p-5 rounded-xl border border-brand-border">
+                        <p class="text-xs text-gray-400 uppercase font-semibold">Unique Handle (No Numbers)</p>
+                        <p class="text-lg font-bold text-brand-orange mt-1">@RedditTalesPro</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AI Image Prompts Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Profile Picture Prompt -->
+                <div class="bg-brand-card border border-brand-border rounded-2xl p-6 flex flex-col justify-between shadow-xl">
+                    <div>
+                        <div class="flex items-center justify-between gap-2 mb-4">
+                            <span class="px-3 py-1 bg-brand-orange/10 text-brand-orange text-xs font-bold rounded-lg">1:1 Square Avatar</span>
+                            <span class="text-xs text-gray-400">Midjourney / Leonardo AI</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-white mb-2">Profile Picture Prompt</h3>
+                        <p id="prompt-pfp" class="text-sm text-gray-300 bg-brand-dark p-4 rounded-xl border border-brand-border leading-relaxed">
+                            Minimalist modern YouTube profile icon, a glowing vibrant orange chat bubble shaped like a playful storytelling mascot face on a sleek matte dark charcoal background, subtle neon rim lighting, clean vector logo style, 3D glossy finish, centered composition, no text, high resolution --ar 1:1
+                        </p>
+                    </div>
+                    <button onclick="copyElementText('prompt-pfp', 'Profile prompt copied!')" class="mt-5 w-full py-3 bg-gray-800 hover:bg-gray-700 text-white font-semibold rounded-xl border border-gray-700 transition-all">
+                        Copy Profile Prompt
+                    </button>
+                </div>
+
+                <!-- Banner Prompt -->
+                <div class="bg-brand-card border border-brand-border rounded-2xl p-6 flex flex-col justify-between shadow-xl">
+                    <div>
+                        <div class="flex items-center justify-between gap-2 mb-4">
+                            <span class="px-3 py-1 bg-brand-orange/10 text-brand-orange text-xs font-bold rounded-lg">16:9 Widescreen Banner</span>
+                            <span class="text-xs text-gray-400">Canva Safe-Zone Ready</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-white mb-2">YouTube Banner Prompt</h3>
+                        <p id="prompt-banner" class="text-sm text-gray-300 bg-brand-dark p-4 rounded-xl border border-brand-border leading-relaxed">
+                            Sleek dark mode YouTube channel banner background, deep charcoal and obsidian tones with glowing vibrant orange neon accents, subtle digital audio soundwaves and floating minimal chat bubble silhouettes on the edges, large clean empty dark space in the exact center for text, modern minimalist tech aesthetic, 8k resolution, no text --ar 16:9
+                        </p>
+                    </div>
+                    <button onclick="copyElementText('prompt-banner', 'Banner prompt copied!')" class="mt-5 w-full py-3 bg-gray-800 hover:bg-gray-700 text-white font-semibold rounded-xl border border-gray-700 transition-all">
+                        Copy Banner Prompt
+                    </button>
+                </div>
+            </div>
+
+            <!-- Banner Safe-Zone Tip -->
+            <div class="bg-brand-card/60 border border-brand-border rounded-2xl p-5 flex items-start gap-4">
+                <div class="p-2.5 bg-brand-orange/10 text-brand-orange rounded-xl shrink-0">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                </div>
+                <div>
+                    <h4 class="text-sm font-bold text-white">Mobile Banner Safe-Zone Tip</h4>
+                    <p class="text-xs sm:text-sm text-gray-400 mt-1 leading-relaxed">
+                        After generating your banner background, open it in Canva or CapCut and place <strong class="text-white">Reddit Tales Pro</strong> right in the dead center using a bold white sans-serif font. Keep the text compact so it never gets cropped on mobile screens.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-brand-border py-6 text-center text-xs text-gray-500">
+        Reddit Tales Pro Studio • Built for High-Retention YouTube Shorts
+    </footer>
+
+    <script>
+        // Initial and expandable library of clean, nonstop scripts (No emojis)
+        const scriptLibrary = [
+            {
+                id: 1,
+                title: "My Rich Uncle Tested Our Family With His Inheritance And I Was The Only One Who Passed",
+                voice: "ElevenLabs 'Sarah' or 'Rachel' (warm, emotional storytelling tone)",
+                music: "Soft emotional piano instrumental (10% volume)",
+                video: "Kinetic sand cutting or soap carving ASMR loop",
+                script: "My rich uncle said whoever spends Christmas with me instead of their own family gets my entire inheritance. Everyone in the family rushed straight to his mansion, except for me. I chose to stay home and spend Christmas morning with my seven-year-old daughter Lily, wearing matching pajamas, eating snowman pancakes, and watching her open presents. That evening, my sister called me crying from his house and said this is awful, Uncle Ben keeps asking why we are not home with our kids. I simply told her, then go home. The next morning, Uncle Ben called my phone directly. You did not come, he said quietly. I replied, no, because my daughter's childhood is worth more to me than your money. There was a long silence on the line, and then he said, maybe that is exactly why everything is yours."
+            },
+            {
+                id: 2,
+                title: "My Entitled Neighbor Stole My Package So I Sent Her A Glitter Bomb",
+                voice: "ElevenLabs 'Adam' or 'Brian' (deep, engaging storytelling tone)",
+                music: "Suspenseful dark piano beat (10-15% volume)",
+                video: "Minecraft parkour gameplay or Subway Surfers no-coin challenge",
+                script: "My neighbor kept stealing my Amazon packages right off my porch, so I decided to set a trap she would never forget. Every time I ordered something small, it vanished within ten minutes of delivery. When I confronted her, she laughed in my face and said I had no proof because my porch camera was broken. What she did not know was that I had just installed a hidden doorbell camera the night before. I packed an old laptop box with five pounds of ultra-fine neon pink glitter, a fart spray canister rigged to go off when opened, and a cheap GPS tracker. Two hours after the delivery driver dropped it off, my phone buzzed. I watched live on my screen as she waddled across the lawn, grabbed the box, and rushed inside her house. Five minutes later, I heard a muffled scream through the walls, followed by her running out her front door covered head to toe in bright pink sparkle and coughing violently. She tried to sue me for damaging her living room rug, until I showed the police the security footage of her stealing it off my porch. She ended up paying a massive fine, and my packages have never been touched since."
+            },
+            {
+                id: 3,
+                title: "My Boss Fired Me Before My Vacation So His Entire Company Crashed",
+                voice: "ElevenLabs 'Adam' or 'Marcus' (confident, dramatic storytelling tone)",
+                music: "Subtle tense synthwave or dark ambient beat (10-15% volume)",
+                video: "GTA 5 mega ramp car stunts or kinetic sand slicing",
+                script: "My boss fired me two days before my approved two-week vacation just so he would not have to pay me for my time off. I was the only IT engineer who understood the custom automated billing system that kept the entire company running. When he handed me the termination papers, he smirked and told me I was completely replaceable. I did not argue, packed my desk, and walked out the door. What he forgot was that my personal admin credentials were tied to the server's monthly security renewal license, which expired automatically the very next morning. At nine o'clock sharp on Monday, the entire payment portal locked itself down and froze over three million dollars in client transactions. My phone started blowing up with dozens of missed calls and frantic voicemails from my old boss begging me to come back and fix it. I waited until my flight landed at my beach resort, answered his call, and told him my new freelance consulting rate was five hundred dollars an hour with a forty-hour minimum paid upfront. He wired the twenty thousand dollars within ten minutes, and I fixed the issue from my laptop by the pool in less than five clicks."
+            }
+        ];
+
+        // Extra reserve scripts for the "Generate Next Script" button
+        const extraScripts = [
+            {
+                title: "My Entitled Cousin Demanded My Wedding Dress So I Gave Her A Fake Price Tag",
+                voice: "ElevenLabs 'Rachel' or 'Bella' (calm, satisfying storytelling tone)",
+                music: "Light dramatic strings or lo-fi mystery beat (12% volume)",
+                video: "Hydraulic press crushing objects or Subway Surfers gameplay",
+                script: "My entitled cousin tried to force me to give her my custom designer wedding dress for free because she claimed she deserved it more than I did. Two weeks before my wedding, she came over to my house while I was at work, convinced my mom to let her try it on, and accidentally spilled red wine all down the front lace. Instead of apologizing, she blamed me for leaving it in the closet and demanded I buy a new one while letting her keep the stained dress for her own wedding next year. I acted completely calm and told her she could keep it as long as she paid the dry cleaning invoice directly to the boutique. She smugly agreed, thinking it would only cost fifty dollars. What she did not realize was that the dress was hand-stitched silk that required specialist restoration, and I also forwarded the boutique the signed damage waiver she texted me admitting she ruined it. When the bill arrived for four thousand two hundred dollars, she called me screaming that I had ruined her honeymoon budget. I simply reminded her that a deal is a deal and blocked her number before walking down the aisle in my backup gown."
+            },
+            {
+                title: "A Karen Took My First Class Seat On A Twelve Hour Flight And Regretted It Instantly",
+                voice: "ElevenLabs 'Brian' or 'Adam' (clear, energetic storytelling tone)",
+                music: "Upbeat suspenseful background beat (10-15% volume)",
+                video: "Minecraft parkour or Satisfying power washing video",
+                script: "A woman refused to move out of my first-class window seat on a twelve-hour international flight because she claimed her economy seat hurt her back. When I politely showed her my boarding pass, she rolled her eyes, put her headphones on, and told me to go sit in row thirty-four so she could sleep. Instead of arguing with her in the aisle, I smiled and said no problem at all, then walked straight to the back of the plane and took her middle economy seat. Twenty minutes later, the flight attendants closed the cabin doors and prepared for takeoff. Right before pushback, the head purser walked up to her in first class to verify the passenger manifest for meal service. When she could not produce a first-class ticket, she pointed toward the back and claimed we had traded seats willingly. The purser walked back to ask me if I agreed to the swap, and I loudly said I had never seen that woman in my life and just wanted the seat I paid three thousand dollars for. Security escorted her off the plane before we even left the gate, and I enjoyed extra legroom and free champagne the entire flight."
+            },
+            {
+                title: "My Landlord Tried To Keep My Security Deposit Until I Showed Him My Timestamped Video",
+                voice: "ElevenLabs 'Marcus' or 'Adam' (sharp, confident narration)",
+                music: "Dark subtle hip-hop instrumental (12% volume)",
+                video: "GTA 5 stunt race or kinetic sand ASMR",
+                script: "My landlord tried to steal my entire two-thousand-dollar security deposit by claiming I destroyed the hardwood floors and left trash everywhere. When I moved out, I spent two full days deep cleaning the apartment until it looked cleaner than the day I signed the lease. Two weeks later, he sent me an itemized invoice charging me for brand new flooring, repainting every wall, and junk removal, claiming I actually owed him an extra five hundred dollars. What he forgot was that during our final walkthrough, he was busy taking a phone call in the hallway while I recorded a continuous ten-minute high-definition video of every single room, closet, and baseboard with the morning newspaper visible on the counter. I replied to his email with a private link to the video and mentioned that state law requires landlords to pay triple damages if they withhold a deposit in bad faith. Within twenty minutes, he called me stammering that his property manager must have mixed up the unit numbers. My full deposit was deposited back into my bank account by five o'clock that afternoon."
+            }
+        ];
+
+        let renderedScripts = [...scriptLibrary];
+        let extraIndex = 0;
+
+        // Render all scripts into the feed
+        function renderScripts() {
+            const container = document.getElementById('scripts-container');
+            container.innerHTML = '';
+
+            renderedScripts.slice().reverse().forEach((item, idx) => {
+                const scriptNumber = renderedScripts.length - idx;
+                const card = document.createElement('article');
+                card.className = "bg-brand-card border border-brand-border rounded-2xl p-6 sm:p-7 shadow-xl transition-all hover:border-gray-700";
+
+                card.innerHTML = `
+                    <div class="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-brand-border">
+                        <span class="px-3 py-1 bg-brand-orange/15 text-brand-orange text-xs font-extrabold uppercase tracking-wider rounded-lg">
+                            Script #${scriptNumber}
+                        </span>
+                        <div class="flex flex-wrap gap-2">
+                            <button onclick="copyTitle(${item.id})" class="px-3.5 py-2 bg-gray-800 hover:bg-gray-700 text-gray-200 text-xs font-semibold rounded-xl border border-gray-700 transition-all">
+                                Copy Title
+                            </button>
+                            <button onclick="copyScriptOnly(${item.id})" class="px-4 py-2 bg-brand-orange hover:bg-brand-amber text-white text-xs font-bold rounded-xl shadow-md shadow-brand-orange/20 transition-all">
+                                Copy Nonstop Script
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="mt-4">
+                        <p class="text-xs text-gray-400 uppercase font-semibold tracking-wider">Video Title (No Emoji)</p>
+                        <h3 class="text-lg sm:text-xl font-extrabold text-white mt-1 leading-snug">${item.title}</h3>
+                    </div>
+
+                    <!-- Production Specs Grid -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mt-5">
+                        <div class="bg-brand-dark p-3.5 rounded-xl border border-brand-border">
+                            <p class="text-[11px] font-bold uppercase text-brand-orange">Voiceover Sound</p>
+                            <p class="text-xs text-gray-300 mt-1">${item.voice}</p>
+                        </div>
+                        <div class="bg-brand-dark p-3.5 rounded-xl border border-brand-border">
+                            <p class="text-[11px] font-bold uppercase text-brand-orange">Background Music</p>
+                            <p class="text-xs text-gray-300 mt-1">${item.music}</p>
+                        </div>
+                        <div class="bg-brand-dark p-3.5 rounded-xl border border-brand-border">
+                            <p class="text-[11px] font-bold uppercase text-brand-orange">Background Video</p>
+                            <p class="text-xs text-gray-300 mt-1">${item.video}</p>
+                        </div>
+                    </div>
+
+                    <!-- Nonstop Voiceover Script Box -->
+                    <div class="mt-5">
+                        <div class="flex items-center justify-between mb-2">
+                            <p class="text-xs text-gray-400 uppercase font-semibold tracking-wider">Nonstop Voiceover Script</p>
+                            <span class="text-xs text-gray-500">${item.script.split(' ').length} words</span>
+                        </div>
+                        <div class="bg-brand-dark p-5 rounded-xl border border-brand-border text-gray-200 text-sm sm:text-base leading-relaxed select-all">
+                            ${item.script}
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // Generate Next Script Handler
+        function generateNextScript() {
+            if (extraIndex < extraScripts.length) {
+                const nextItem = {
+                    id: renderedScripts.length + 1,
+                    ...extraScripts[extraIndex]
+                };
+                renderedScripts.push(nextItem);
+                extraIndex++;
+                renderScripts();
+                showToast(`Generated Script #${nextItem.id}!`);
+            } else {
+                // Recycle with fresh numbering if user clicks past reserve
+                const template = extraScripts[extraIndex % extraScripts.length];
+                const nextItem = {
+                    id: renderedScripts.length + 1,
+                    ...template
+                };
+                renderedScripts.push(nextItem);
+                extraIndex++;
+                renderScripts();
+                showToast(`Added Script #${nextItem.id} to top of feed!`);
+            }
+        }
+
+        // Tab Switching Logic
+        function switchTab(tabName) {
+            const scriptsView = document.getElementById('view-scripts');
+            const brandingView = document.getElementById('view-branding');
+            const tabScripts = document.getElementById('tab-scripts');
+            const tabBranding = document.getElementById('tab-branding');
+
+            if (tabName === 'scripts') {
+                scriptsView.classList.remove('hidden');
+                brandingView.classList.add('hidden');
+                tabScripts.className = "px-4 py-2 rounded-lg text-sm font-semibold bg-brand-orange text-white transition-all";
+                tabBranding.className = "px-4 py-2 rounded-lg text-sm font-semibold text-gray-400 hover:text-white transition-all";
+            } else {
+                scriptsView.classList.add('hidden');
+                brandingView.classList.remove('hidden');
+                tabBranding.className = "px-4 py-2 rounded-lg text-sm font-semibold bg-brand-orange text-white transition-all";
+                tabScripts.className = "px-4 py-2 rounded-lg text-sm font-semibold text-gray-400 hover:text-white transition-all";
+            }
+        }
+
+        // Copy Helpers using fallback-safe execCommand
+        function copyText(text, message) {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
+            document.body.appendChild(textarea);
+            textarea.select();
+            try {
+                document.execCommand('copy');
+                showToast(message);
+            } catch (err) {
+                showToast('Failed to copy text.');
+            }
+            document.body.removeChild(textarea);
+        }
+
+        function copyElementText(elementId, message) {
+            const el = document.getElementById(elementId);
+            if (el) {
+                copyText(el.innerText.trim(), message);
+            }
+        }
+
+        function copyTitle(id) {
+            const found = renderedScripts.find(s => s.id === id);
+            if (found) copyText(found.title, 'Video title copied!');
+        }
+
+        function copyScriptOnly(id) {
+            const found = renderedScripts.find(s => s.id === id);
+            if (found) copyText(found.script, 'Nonstop script copied!');
+        }
+
+        // Custom Toast Notification
+        let toastTimeout;
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toast-msg');
+            toastMsg.innerText = msg;
+
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 2500);
+        }
+
+        // Initialize on load
+        window.onload = function() {
+            renderScripts();
+        };
+    </script>
+</body>
+</html>
